@@ -54,6 +54,10 @@ module VuejsWebpackRails
       end
     end
 
+    def modify_procfile
+      gsub_file 'Procfile', %r{(config/webpack.config.js)\s*$}, '\1 --hot --inline'
+    end
+
     def install_packages
       install_npm_packanges '-S', *%w(vue lodash)
       install_npm_packanges '-D', *%w(webpack-manifest-plugin extract-text-webpack-plugin webpack-merge)
