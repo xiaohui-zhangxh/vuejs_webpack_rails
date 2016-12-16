@@ -9,8 +9,9 @@ module VuejsWebpackRails
       generate "webpack_rails:install"
     end
 
-    def copy_vue_config
-      copy_file 'vue.config.js', 'config/vue.config.js'
+    def copy_files
+      directory 'config'
+      directory 'webpack'
     end
 
     def modify_webpack_config
@@ -59,13 +60,29 @@ module VuejsWebpackRails
     end
 
     def install_packages
-      install_npm_packanges '-S', *%w(vue lodash)
+      install_npm_packanges '-S', *%w(vue lodash vue-resource)
       install_npm_packanges '-D', *%w(webpack-manifest-plugin extract-text-webpack-plugin webpack-merge)
       install_npm_packanges '-D', *%w(babel-core babel-loader babel-runtime babel-plugin-transform-runtime babel-preset-es2015)
       install_npm_packanges '-D', *%w(coffee-loader coffee-script)
       install_npm_packanges '-D', *%w(css-loader style-loader node-sass sass-loader)
       install_npm_packanges '-D', *%w(exports-loader expose-loader file-loader url-loader imports-loader)
       install_npm_packanges '-D', *%w(vue-loader vue-hot-reload-api vue-template-compiler)
+    end
+
+    def print_message
+      say <<-MESSAGE.strip_heredoc
+
+      ==  Vuejs + Webpack + Rails  ==
+
+      1. Please add below line to your layout(app/views/layouts/application.html),
+        this is loading Vue assets from Webpack web server in development
+
+          <% = javascript_include_tag *webpack_asset_paths('application') %>
+
+      2. Now add your own Vue components to webpack/components/<your_component>,
+      require your component from webpack/components/index.js
+
+      MESSAGE
     end
 
     no_tasks do
